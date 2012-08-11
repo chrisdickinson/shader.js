@@ -1,0 +1,20 @@
+{
+  "name": "shader.js",
+  "version": "0.0.0",
+  "description": "simple shader library for webgl + browserify",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chrisdickinson/shader.js.git"
+  },
+  "keywords": [
+    "webgl",
+    "browserify",
+    "shader"
+  ],
+  "author": "Chris Dickinson",
+  "license": "MIT"
+}
