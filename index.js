@@ -186,13 +186,12 @@ function createModule(gl) {
     gl[meta[0]](meta[1], val)
   }
 
-  proto.attribute = function(name, val, normalized) {
+  proto.attribute = function(name, type, normalized, stride, offset) {
     var meta = this._attributes[name]
       , handle = this._handle
 
     gl.enableVertexAttribArray(meta[1])
-    gl.bindBuffer(gl.ARRAY_BUFFER, val)
-    gl.vertexAttribPointer(meta[1], meta[0], gl.FLOAT, normalized || false, 0, 0) 
+    gl.vertexAttribPointer(meta[1], meta[0], type || gl.FLOAT, normalized || false, stride || 0, offset || 0) 
     gl.bindAttribLocation(handle, meta[1], name)
   }
 
