@@ -73,7 +73,7 @@ of shader source code. Maps the following types to the following calls:
 > Usage with [texture.js](https://github.com/chrisdickinson/texture.js):
 > ````javascript
 >   // sets `texture` to point at gl.TEXTURE1 with the contents of `myTexture`
->   shader.uniform('texture', myTexture.use(1))
+>   shader.uniform('texture', myTexture.enable(1))
 > ````
 
 ### Shader#attribute(attributeName[, type, normalized, stride, offset]) -> undefined
