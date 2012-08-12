@@ -31,15 +31,18 @@ cons.fromURLs = function(vertex_url, fragment_url, ready) {
     , vertexSRC 
     , fragmentSRC
 
-  xhr_vertex.open('GET', xhr_vertex)
-  xhr_fragment.open('GET', xhr_fragment)
+  xhr_vertex.open('GET', vertex_url)
+  xhr_fragment.open('GET', fragment_url)
 
   xhr_fragment.onreadystatechange =
   xhr_vertex.onreadystatechange = check_done
 
+  xhr_vertex.send(null)
+  xhr_fragment.send(null)
+
   function check_done() {
     if(this.readyState === 4) {
-      if(this.status < 300 && this.status > 199) {
+      if(this.status > 299 || this.status < 200) {
         return ready(new Error('non-200 response'))
       }
 
@@ -57,7 +60,7 @@ cons.fromIds = function(vertex_id, fragment_id, ready) {
   var vertex_el = document.getElementById(vertex_id)
     , fragment_el = document.getElementById(fragment_id)
 
-  return ready(null, new GLShader(text(vertex_el), text(fragment_el))
+  return ready(null, new GLShader(text(vertex_el), text(fragment_el)))
 
   function text(el) {
     var data = []
@@ -126,18 +129,16 @@ proto.compile = function() {
   gl.attachShader(handle, this._fragmentHandle)
   gl.linkProgram(handle)
 
-  if(!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    throw new Error(gl.getLastError())
-  }
-
   this._handle = handle
   this.attachAttributes()
   this.attachUniforms()
 }
 
 proto.attachAttributes = function() {
-  var rex = /\s*attribute([\w\d]+)\s*([\w\d]+);/g
+  var gl = this.constructor.gl()
+    , rex = /\s*attribute\s*([\w\d]+)\s*([\w\d]+);/g
     , src = this._fragmentSRC + '\n' + this._vertexSRC
+    , handle = this._handle
     , map = {}
     , attribs = {}
     , match
@@ -153,15 +154,17 @@ proto.attachAttributes = function() {
     type = match[1]
     name = match[2]
 
-    attribs[name] = [map[type], gl.getUniformLocation(handle, name)] 
+    attribs[name] = [map[type], gl.getAttribLocation(handle, name)] 
   }
 
   this._attributes = attribs
 }
 
 proto.attachUniforms = function() {
-  var rex = /\s*uniform\*([\w\d]+)\s*([\w\d]+);/g
+  var gl = this.constructor.gl()
+    , rex = /\s*uniform\s*([\w\d]+)\s*([\w\d]+);/g
     , src = this._fragmentSRC + '\n' + this._vertexSRC
+    , handle = this._handle
     , map = {}
     , uniforms = {}
     , match
@@ -188,7 +191,7 @@ proto.attachUniforms = function() {
 
 proto.uniform = function(name, val) {
   var gl = this.constructor.gl()
-    , meta = this._attributes[name]
+    , meta = this._uniforms[name]
     , handle = this._handle
 
   gl[meta[0]](meta[1], val)
@@ -200,5 +203,7 @@ proto.attribute = function(name, val, normalized) {
     , handle = this._handle
 
   gl.enableVertexAttribArray(meta[1])
+  gl.bindBuffer(gl.ARRAY_BUFFER, val)
   gl.vertexAttribPointer(meta[1], meta[0], gl.FLOAT, normalized || false, 0, 0) 
+  gl.bindAttribLocation(handle, meta[1], name)
 }
