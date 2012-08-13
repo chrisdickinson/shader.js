@@ -68,8 +68,7 @@ function createModule(gl) {
   proto.vertex = function(_) {
     if(_) {
       if(this._vertexHandle) {
-        this.constructor.gl()
-            .deleteShader(this._vertexHandle)
+        gl.deleteShader(this._vertexHandle)
         this._vertexHandle = null
       }
       this._vertexSRC = _
@@ -81,8 +80,7 @@ function createModule(gl) {
   proto.fragment = function(_) {
     if(_) {
       if(this._fragmentHandle) {
-        this.constructor.gl()
-            .deleteShader(this._fragmentHandle)
+        gl.deleteShader(this._fragmentHandle)
         this._fragmentHandle = null
       }
       this._fragmentSRC = _
