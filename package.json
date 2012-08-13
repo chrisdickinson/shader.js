@@ -1,6 +1,6 @@
 {
   "name": "shader.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "simple shader library for webgl + browserify",
   "main": "index.js",
   "scripts": {
