@@ -180,8 +180,14 @@ function createModule(gl) {
   proto.uniform = function(name, val) {
     var meta = this._uniforms[name]
       , handle = this._handle
+      , name = meta[0]
+      , loc = meta[1]
 
-    gl[meta[0]](meta[1], val)
+    if(name === 'uniformMatrix4fv') {
+      gl[meta[0]](meta[1], false, val)
+    } else {
+      gl[meta[0]](meta[1], val)
+    }
   }
 
   proto.attribute = function(name, type, normalized, stride, offset) {
